@@ -3,78 +3,11 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+#include "header/ColorManager.h"
+#include "header/Tile.h"
 
-class GameBoard;
 
 const int FPS_SET = 60;
-
-struct DestroyedTileCoordinate {
-    unsigned int i;
-    unsigned int j;
-    
-    DestroyedTileCoordinate(int i, int j) : i(i), j(j) {}
-};
-
-class ColorManager{
-    private:
-        sf::Color red = sf::Color::Red;
-        sf::Color blue = sf::Color::Blue;
-        sf::Color green = sf::Color::Green;
-        sf::Color yellow = sf::Color::Yellow;
-    public:
-        ColorManager(){
-            std::srand(std::time(0));
-            red = sf::Color(255, 0, 97); 
-            blue = sf::Color(0, 195, 255); 
-            green = sf::Color(17, 230, 45); 
-            yellow = sf::Color(255, 188, 45); 
-        }
-
-        sf::Color getRandomColor(){
-            int randomInt = std::rand() % 4;
-
-            switch(randomInt){
-                case 0: return red;
-                case 1: return blue;
-                case 2: return green;
-                case 3: return yellow;
-                default: return red;
-        }
-        return blue;
-    }
-
-
-
-};
-
-
-
-class Tile{
-    private:
-        bool active = false;
-        sf::RectangleShape rectangle;
-
-    public:
-        Tile() : active(false), rectangle(sf::Vector2f(64.f, 64.f)){}
-        void draw(sf::RenderWindow* window){
-            window->draw(rectangle);
-        }
-        void setActive(bool active){this->active = active;}
-        bool isActive(){ return this->active;}
-
-        void setFillColor(const sf::Color& color) {
-        rectangle.setFillColor(color);
-        }
-        sf::Color getFillColor(){
-            return rectangle.getFillColor();
-        }
-
-        void updatePosition(const unsigned int i, const unsigned int j){
-            rectangle.setPosition(sf::Vector2f((768 + (j * 64)), (1080 - 140 - (i*64))));
-        }
-
-
-};
 
 class GameBoard{
     private:
@@ -253,6 +186,7 @@ class GameBoard{
     }
 
     bool isLost(){ return this->gameLost;}
+    void setScore(int score){this->gameScore = score;}
 
 };
 class Game{
@@ -282,32 +216,40 @@ class Game{
                                 window->close();
                             }
                             if(!gameBoard->isLost()){
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
+                            sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > 50){
                                     if(pressed){
                                     gameBoard->upKey();
                                     pressed = false;}
                                 }
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
+                                sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -50){
                                     if(pressed){
                                     gameBoard->leftKey();
                                     pressed = false;}
                                 }
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) ||
+                                sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) < -50){
                                     if(pressed){
                                     gameBoard->downKey();
                                     pressed = false;}
                                 }
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || 
+                                sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) > 50){
                                     if(pressed){
                                     gameBoard->rightKey();
                                     pressed = false;}
                                 }
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) ||
+                                sf::Joystick::isButtonPressed(0,0)){
                                     if(pressed){
                                     gameBoard->switchTiles();
                                     pressed = false;}
                                 }
-                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab)){
+                                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab) || 
+                                sf::Joystick::isButtonPressed(0,5) ||
+                                sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Z) > 80 || 
+                                sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Z) < -80) {
                                     if(pressed){
                                     gameBoard->emitScore();
                                     pressed = false;}
@@ -317,8 +259,11 @@ class Game{
                                     gameBoard->gravity();
                                     pressed = false;}
                                 }
+
                             }
                         }
+
+
                 
                 // Wenn noch Zeit bis zum nächsten Frame ist
                         if (now < nextFrameTime) {
