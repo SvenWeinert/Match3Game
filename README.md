@@ -1,6 +1,7 @@
 # Match3Game
 English Version below!.
 
+Installation:
 Ergänzen Sie die Dateipfade zu Ihrer SFML-Installation
 im makefile.
 Ergänzen Sie eine "arial.ttf" im Ordner.
@@ -13,12 +14,11 @@ derselben Farbe nebeneinander zu schieben, und
 zu eliminieren.
 
 Bewegen Sie den Cursor mit: W, A, S, D
-Tauschen Sie zwei Blöcke mit der Leertaste
-English Version below!
-
-Installation:
+Tauschen Sie zwei Blöcke mit der Leertaste!
+Drücken Sie ESCAPE, um das Spiel zu verlassen.
 Drücken Sie TAB, um nebeneinanderstehende Blöcke
 derselben Farbe zu eliminieren.
+
 
 English Version:
 How to install:
@@ -38,7 +38,7 @@ Move the cursor with: W, A, S, D
 Swap two blocks with the spacebar
 Press TAB to eliminate adjacent blocks
 of the same color.
-
 Swap two blocks with the spacebar
-Press TAB to eliminate adjacent blocks
+Press TAB to eliminate adjacent blocks.
+Use ESCAPE, to close the application.
 of the same color.
